@@ -1,4 +1,8 @@
-# CRD's
+###############################################################################
+# CRD's                                                                       #
+###############################################################################
+
+# Nginx Ingress Custom Resource Definitions
 data "http" "ingress_crd" {
   url = "https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml"
 }
@@ -9,6 +13,8 @@ resource "kubectl_manifest" "ingress_crd" {
   for_each  = data.kubectl_file_documents.ingress_crd.manifests
   yaml_body = each.value
 }
+
+# RabbitMQ Operator Custom Resource Definitions
 data "http" "rabbitmq_operator_crd" {
   url = "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 }
@@ -19,6 +25,7 @@ resource "kubectl_manifest" "rabbitmq_operator_crd" {
   for_each  = data.kubectl_file_documents.rabbitmq_operator_crd.manifests
   yaml_body = each.value
 }
+
 ###############################################################################
 # RabbitMQ                                                                    #
 ###############################################################################

@@ -1,6 +1,6 @@
 # Go Scale
 
-Just a playground for watching services scale to meet demand, with a whole bunch of DevOps goodies thrown in
+Just a playground for watching services scale to meet demand, with a bunch of DevOps goodies thrown in
 
 ## Requirements
 
@@ -11,8 +11,7 @@ Just a playground for watching services scale to meet demand, with a whole bunch
 ## Quickstart
 
 ```bash
-make cluster
-make infrasture
+make
 ```
 
 ## Services
