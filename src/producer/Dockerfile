@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.16-alpine
+FROM golang:1.19-alpine3.17
 
 WORKDIR /app
 
@@ -10,8 +10,10 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /docker-gs-ping
+RUN #GOOS=linux GOARCH=amd64 go build -o ./producer
+RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o producer -ldflags="-w -s"
+RUN chmod +x ./producer
 
 EXPOSE 8080
 
-CMD [ "/docker-gs-ping" ]
+CMD [ "/app/producer" ]
