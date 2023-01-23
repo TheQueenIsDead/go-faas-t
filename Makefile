@@ -6,6 +6,10 @@ default: all
 all:
 	terraform apply -auto-approve
 
+# Export kind cluster kubeconfig
+kubeconfig:
+	kind export kubeconfig --name kind-faas
+
 # Remove cluster and terraform state
 clean:
 	kind delete cluster --name kind-faas
