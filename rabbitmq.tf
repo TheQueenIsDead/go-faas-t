@@ -28,7 +28,7 @@ resource "kubectl_manifest" "rabbit_mq_cluster" {
     apiVersion = "rabbitmq.com/v1beta1"
     kind       = "RabbitmqCluster"
     metadata   = {
-      name = "go-scale"
+      name = "rabbitmq"
       namespace = "default"
     }
   })
