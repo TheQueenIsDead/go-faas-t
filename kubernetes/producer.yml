@@ -33,3 +33,6 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: rabbitmq-default-user
