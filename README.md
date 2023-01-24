@@ -1,4 +1,4 @@
-# Go Scale
+# go-faas-t
 
 ## Overview
 
