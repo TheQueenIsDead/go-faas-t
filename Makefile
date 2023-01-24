@@ -14,6 +14,8 @@ deploy:
 	kind load docker-image go-faas-consumer --name kind-faas
 	kind load docker-image go-faas-producer --name kind-faas
 	kubectl apply -Rf ./kubernetes
+	kubectl rollout restart deployment producer
+	kubectl rollout restart deployment consumer
 
 # Export kind cluster kubeconfig
 kubeconfig:
