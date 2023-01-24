@@ -1,10 +1,19 @@
-# Makefile for go-scale
+# Makefile for go-faas-t
 
 default: all
 
 # Apply infrastructure changes
 all:
 	terraform apply -auto-approve
+
+build:
+	$(MAKE) consumer
+	$(MAKE) producer
+
+deploy:
+	kind load docker-image go-faas-consumer --name kind-faas
+	kind load docker-image go-faas-producer --name kind-faas
+	kubectl apply -Rf ./kubernetes
 
 # Export kind cluster kubeconfig
 kubeconfig:
@@ -22,8 +31,8 @@ clean:
 	rm terraform.tfstate*
 
 #images:
-#	docker build consumer -t go-scale/consumer
-#	docker build consumer -t go-scale/consumer
+#	docker build consumer -t go-faas-t/consumer
+#	docker build consumer -t go-faas-t/consumer
 
 
 .PHONY: clean all
