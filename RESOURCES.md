@@ -36,6 +36,7 @@ This is just a big brain-dump of links that may or may not provide helpful infor
  - [Ingress Operator](https://github.com/openfaas/ingress-operator)
  - [MQTT Connector](https://github.com/openfaas/mqtt-connector)
  - [Misc Repos](https://github.com/orgs/openfaas/repositories?page=2&type=all)
+ - [Architecture breakdown](https://medium.com/@pavithra_38952/openfaas-on-docker-440541d635a2)
 
 
 

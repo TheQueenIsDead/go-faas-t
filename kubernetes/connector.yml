@@ -1,0 +1,125 @@
+# https://github.com/Templum/rabbitmq-connector/tree/v1.0.8/artifacts
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-connector-configmap
+  namespace: openfaas
+data:
+  OPEN_FAAS_GW_URL: "http://gateway.openfaas:8080"
+  RMQ_TOPICS: "media"
+  RMQ_HOST: "rabbitmq.default.svc"
+  RMQ_PORT: "5672"
+  RMQ_USER: "default_user_0T58DCWQFcWQbLrv3hy"
+  RMQ_PASS: "b2aC2VCipg608CN76_qjw4cMrB5_dSkY"
+  REQ_TIMEOUT: "30s"
+  TOPIC_MAP_REFRESH_TIME: "30s"
+  PATH_TO_TOPOLOGY: "/etc/topology.yaml"
+# https://github.com/Templum/rabbitmq-connector/blob/v1.0.8/artifacts/example_topology.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-connector-topology-configmap
+  namespace: openfaas
+data:
+  topology.yaml: |
+    # Name of the exchange
+    - name: "FaasDefault" # Required
+      topics: [ "media" ] # Required
+      # Do we need to declare the exchange ? If it already exists it verifies that the exchange matches the configuration
+      declare: false # Default: false
+      # Either direct or topic
+      type: "direct" # Required 
+      # Persistence of Exchange between Rabbit MQ Server restarts
+      durable: true # Default: false
+      # Auto Deletes Exchange once all consumer are gone
+      auto-deleted: false # Default: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-connector
+  namespace: openfaas
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq-connector
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-connector
+    spec:
+      volumes:
+        - name: basic-auth
+          secret:
+            secretName: basic-auth
+#            optional: false
+        - name: topology
+          configMap:
+            name: rabbitmq-connector-topology-configmap
+#            optional: false
+      containers:
+        - name: connector
+          image: templum/rabbitmq-connector:develop
+#          command: ["sleep", "infinity"]
+          imagePullPolicy: Always
+          resources: {} # Adjust them to suite your needs
+          volumeMounts:
+            - name: "basic-auth"
+              readOnly: true
+              mountPath: "/etc/openfaas"
+            - name: topology
+              readOnly: true
+              mountPath: "/etc/topology.yaml"
+              subPath: "topology.yaml"
+          env:
+            - name: basic_auth
+              value: "true"
+            - name: secret_mount_path
+              value: "/etc/openfaas"
+            - name: OPEN_FAAS_GW_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: OPEN_FAAS_GW_URL
+            - name: RMQ_TOPICS
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: RMQ_TOPICS
+            - name: RMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: RMQ_HOST
+            - name: RMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: RMQ_PORT
+            - name: RMQ_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: RMQ_USER
+            - name: RMQ_PASS
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: RMQ_PASS
+            - name: REQ_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: REQ_TIMEOUT
+            - name: TOPIC_MAP_REFRESH_TIME
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: TOPIC_MAP_REFRESH_TIME
+            - name: PATH_TO_TOPOLOGY
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-connector-configmap
+                  key: PATH_TO_TOPOLOGY
