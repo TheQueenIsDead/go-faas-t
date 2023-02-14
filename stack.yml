@@ -1,0 +1,11 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:6969
+functions:
+  consumer:
+    lang: go
+    handler: ././src/consumer
+    image: docker.io/library/go-faas-consumer
+    annotations:
+      topic: media

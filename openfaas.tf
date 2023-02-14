@@ -43,5 +43,12 @@ resource "helm_release" "openfaas" {
     name  = "generateBasicAuth"
     value = "true"
   }
-}
 
+  # Required for KinD clusters without a local registry.
+  # https://docs.openfaas.com/reference/private-registries/#set-a-custom-imagepullpolicy
+  set {
+    name = "faasnetes.imagePullPolicy"
+    value = "IfNotPresent"
+  }
+
+}

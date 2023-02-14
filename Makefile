@@ -11,18 +11,18 @@ build:
 	$(MAKE) producer
 
 deploy:
-	kind load docker-image go-faas-consumer --name kind-faas
+	kind load docker-image go-faas-consumer:latest --name kind-faas
 	kind load docker-image go-faas-producer --name kind-faas
 	kubectl apply -Rf ./kubernetes
 	kubectl rollout restart deployment producer
-	kubectl rollout restart deployment consumer
+	#kubectl rollout restart deployment consumer:latest
 
 # Export kind cluster kubeconfig
 kubeconfig:
 	kind export kubeconfig --name kind-faas
 
 consumer:
-	docker build src/consumer -t go-faas-consumer
+	docker build src/consumer -t go-faas-consumer:latest
 
 producer:
 	docker build src/producer -t go-faas-producer
@@ -37,4 +37,4 @@ clean:
 #	docker build consumer -t go-faas-t/consumer
 
 
-.PHONY: clean all
+.PHONY: clean all build
